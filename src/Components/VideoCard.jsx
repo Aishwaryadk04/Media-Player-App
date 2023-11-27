@@ -1,22 +1,30 @@
 import React,{useState} from 'react'
 import { Card,Modal} from 'react-bootstrap'
+import { deleteVideos } from '../Services/allAPI';
 
-function VideoCard() {
+function VideoCard({displayData,setDeleteVideoStatus}) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+//  create a function for deleting a video
+  const removeVideo = async (id)=>{
+    // make api call
+    const response = await deleteVideos(id)
+    setDeleteVideoStatus(true)
+    
+  };
 
   return (
     
     <>
       <div>
-      <Card>
-      <Card.Img onClick={handleShow} variant="top" src="https://pbs.twimg.com/profile_images/446356636710363136/OYIaJ1KK_400x400.png" />
+      <Card className='mb-3'>
+      <Card.Img onClick={handleShow} height={'180px'} variant="top" src= {displayData?.url} />
       <Card.Body>
         <Card.Title className='d-flex justify-content-between align-items-center'>
-          <h6>Video Caption</h6>
-          <button className='btn '><i className='fa-solid fa-trash text-danger'></i></button>
+          <h6>{displayData?.caption}</h6>
+          <button className='btn' onClick={()=>removeVideo(displayData?.id)}   ><i className='fa-solid fa-trash text-danger'></i></button>
 
         </Card.Title>
       </Card.Body>
@@ -24,10 +32,10 @@ function VideoCard() {
 
     <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Video Caption</Modal.Title>
+          <Modal.Title>{displayData?.caption}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <iframe width="100%" height="370" src="https://www.youtube.com/embed/Rh3tobg7hEo?autoplay=1" title="Learn React With This One Project" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe width="100%" height="370" src={`${displayData?.embedLink}?autoplay=1`} title={displayData?.caption} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
         </Modal.Body>
       </Modal>
       </div>
